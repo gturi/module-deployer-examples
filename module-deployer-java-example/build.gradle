@@ -16,10 +16,10 @@ def downloadLibFromUrl(String libSaveDir, String libName, String libUrl) {
         // creates the missing folders tree
         folder.mkdirs()
     }
-    def file = new File(libSaveDir + '/' + libName)
+    def file = new File("$libSaveDir/$libName")
     if (!file.exists()) {
         // downloads the lib from the specified url
-        new URL(libUrl).withInputStream { i -> file.withOutputStream { it << i } }
+        ant.get(src: libUrl, dest: file)
     }
     // adds the lib to dependencies
     getDependencies().add('compile', fileTree(dir: libSaveDir, include: libName))
@@ -27,7 +27,8 @@ def downloadLibFromUrl(String libSaveDir, String libName, String libUrl) {
 
 dependencies {
     def libSaveDir = "${System.properties['user.home']}/.gradle/caches/modules-2/files-2.1"
-    def libName = 'multi-module-deployer-1.0.0.jar'
-    def url = 'https://github.com/FlamingTuri/multi-module-deployer/releases/download/v1.0.0/multi-module-deployer-1.0.0.jar'
+    def version = '1.1.0'
+    def libName = "multi-module-deployer-${version}.jar"
+    def url = "https://github.com/FlamingTuri/multi-module-deployer/releases/download/v$version/$libName"
     downloadLibFromUrl(libSaveDir, libName, url)
 }
